@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoloLeads — Estás viendo una demo en vivo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0a0a0a;
+            --white: #f5f5f0;
+            --accent: #c8ff00;
+            --accent-dim: #a8d600;
+            --gray-dark: #1a1a1a;
+            --gray-mid: #2a2a2a;
+            --gray-text: #999;
+            --font-body: 'DM Sans', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--black);
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10,10,10,0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(200,255,0,0.08);
+        }
+
+        .logo {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .logo span { color: var(--accent); }
+
+        nav a {
+            color: var(--gray-text);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        nav a:hover { color: var(--accent); }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-cta {
+            background: var(--accent) !important;
+            color: var(--black) !important;
+            padding: 0.5rem 1.25rem;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            transition: background 0.3s !important;
+        }
+
+        .nav-cta:hover { background: var(--accent-dim) !important; }
+
+        /* LIVE TICKER */
+        .live-ticker {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--accent);
+            color: var(--black);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 0.35rem 1rem;
+            z-index: 200;
+            letter-spacing: 0.5px;
+        }
+
+        .live-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #ff3333;
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 9rem 2rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-tag {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeUp 0.6s ease forwards 0.2s;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.08;
+            letter-spacing: -2px;
+            max-width: 850px;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeUp 0.6s ease forwards 0.4s;
+        }
+
+        .hero h1 em {
+            font-style: normal;
+            color: var(--accent);
+        }
+
+        .hero-sub {
+            font-size: 1.15rem;
+            color: var(--gray-text);
+            max-width: 580px;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: fadeUp 0.6s ease forwards 0.6s;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeUp 0.6s ease forwards 0.8s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--black);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 4px;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-dim);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            padding: 1rem 2rem;
+            border: 1px solid rgba(245,245,240,0.2);
+            border-radius: 4px;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* META ANNOTATION */
+        .meta-note {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--accent);
+            opacity: 0.6;
+            border-left: 2px solid var(--accent);
+            padding-left: 1rem;
+            margin-top: 1rem;
+            line-height: 1.6;
+            max-width: 500px;
+        }
+
+        /* STATS BAR */
+        .stats-bar {
+            border-top: 1px solid var(--gray-mid);
+            margin-top: 3rem;
+            padding-top: 2rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            opacity: 0;
+            animation: fadeUp 0.6s ease forwards 1s;
+        }
+
+        .stat-item { font-family: var(--font-mono); }
+
+        .stat-num {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--gray-text);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.25rem;
+        }
+
+        /* SECTIONS */
+        section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-tag {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-desc {
+            color: var(--gray-text);
+            font-size: 1.05rem;
+            max-width: 600px;
+            line-height: 1.8;
+        }
+
+        /* FOURTH WALL SECTION */
+        .fourth-wall {
+            border-top: 1px solid var(--gray-mid);
+        }
+
+        .fw-narrative {
+            max-width: 680px;
+            margin-top: 2rem;
+        }
+
+        .fw-narrative p {
+            color: var(--gray-text);
+            font-size: 1.1rem;
+            line-height: 1.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .fw-narrative strong {
+            color: var(--white);
+            font-weight: 700;
+        }
+
+        .fw-narrative .highlight {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .fw-timeline {
+            margin-top: 3rem;
+            border: 1px solid var(--gray-mid);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .fw-timeline-header {
+            background: var(--gray-dark);
+            padding: 1rem 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--gray-mid);
+        }
+
+        .fw-step {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--gray-mid);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: background 0.3s;
+        }
+
+        .fw-step:last-child { border-bottom: none; }
+
+        .fw-step.active {
+            background: rgba(200,255,0,0.03);
+        }
+
+        .fw-step-marker {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 50%;
+            border: 2px solid var(--gray-mid);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--gray-text);
+            margin-top: 2px;
+            transition: all 0.3s;
+        }
+
+        .fw-step.active .fw-step-marker {
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 0 12px rgba(200,255,0,0.2);
+        }
+
+        .fw-step.completed .fw-step-marker {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: var(--black);
+        }
+
+        .fw-step-content h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .fw-step-content p {
+            color: var(--gray-text);
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .fw-step.active .fw-step-content h4 { color: var(--accent); }
+
+        /* PROBLEM */
+        .problem { border-top: 1px solid var(--gray-mid); }
+
+        .problem-narrative {
+            max-width: 680px;
+            margin-top: 2rem;
+        }
+
+        .problem-narrative p {
+            color: var(--gray-text);
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .problem-narrative strong { color: var(--white); }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .problem-item {
+            padding: 2rem;
+            border: 1px solid var(--gray-mid);
+            border-radius: 6px;
+            transition: border-color 0.3s;
+        }
+
+        .problem-item:hover { border-color: rgba(200,255,0,0.3); }
+
+        .problem-icon {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .problem-icon::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .problem-item h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .problem-item p {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* SERVICES */
+        .services { border-top: 1px solid var(--gray-mid); }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: var(--gray-dark);
+            border: 1px solid var(--gray-mid);
+            border-radius: 6px;
+            padding: 2.5rem 2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .service-card:hover::before { transform: scaleX(1); }
+        .service-card:hover {
+            border-color: rgba(200,255,0,0.2);
+            transform: translateY(-2px);
+        }
+
+        .service-num {
+            font-family: var(--font-mono);
+            font-size: 2rem;
+            font-weight: 700;
+            color: rgba(200,255,0,0.15);
+            margin-bottom: 1.5rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.5px;
+        }
+
+        .service-card p {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* PROCESS */
+        .process { border-top: 1px solid var(--gray-mid); }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            margin-top: 3rem;
+        }
+
+        .step {
+            padding: 2.5rem;
+            border: 1px solid var(--gray-mid);
+            position: relative;
+        }
+
+        .step:first-child { border-radius: 6px 0 0 6px; }
+        .step:last-child { border-radius: 0 6px 6px 0; }
+
+        .step-num {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1.25rem;
+        }
+
+        .step h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.5px;
+        }
+
+        .step p {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .step-arrow {
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            background: var(--black);
+            border: 1px solid var(--gray-mid);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            color: var(--accent);
+            font-size: 0.8rem;
+        }
+
+        /* INDUSTRIES */
+        .industries { border-top: 1px solid var(--gray-mid); }
+
+        .industries-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .industries-note {
+            margin-top: 2.5rem;
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--gray-text);
+        }
+
+        .industries-note span { color: var(--accent); }
+
+        .industry-card {
+            padding: 2rem;
+            border: 1px solid var(--gray-mid);
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .industry-card:hover { border-color: var(--accent); }
+
+        .industry-emoji {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .industry-card h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .industry-card p {
+            color: var(--gray-text);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        /* DIAGNOSTIC FORM — THE DEMO */
+        .diagnostic {
+            border-top: 1px solid var(--gray-mid);
+        }
+
+        .diagnostic-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin-top: 3rem;
+            align-items: start;
+        }
+
+        .diag-form {
+            background: var(--gray-dark);
+            border: 1px solid var(--gray-mid);
+            border-radius: 8px;
+            padding: 2.5rem;
+        }
+
+        .diag-field {
+            margin-bottom: 1.5rem;
+        }
+
+        .diag-field label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--white);
+        }
+
+        .diag-field input,
+        .diag-field select {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            background: var(--black);
+            border: 1px solid var(--gray-mid);
+            border-radius: 4px;
+            color: var(--white);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .diag-field select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        .diag-field input:focus,
+        .diag-field select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .diag-field input::placeholder {
+            color: var(--gray-text);
+        }
+
+        .diag-submit {
+            width: 100%;
+            background: var(--accent);
+            color: var(--black);
+            padding: 1rem;
+            border: none;
+            border-radius: 4px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .diag-submit:hover {
+            background: var(--accent-dim);
+        }
+
+        .diag-sidebar {
+            position: sticky;
+            top: 120px;
+        }
+
+        .diag-sidebar-card {
+            border: 1px solid var(--gray-mid);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .diag-sidebar-card h4 {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .diag-sidebar-card p {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .crm-preview {
+            border: 1px solid var(--gray-mid);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .crm-header {
+            background: var(--gray-dark);
+            padding: 0.75rem 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid var(--gray-mid);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .crm-row {
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid rgba(42,42,42,0.5);
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--gray-text);
+            transition: all 0.5s;
+        }
+
+        .crm-row.you {
+            background: rgba(200,255,0,0.05);
+            color: var(--white);
+        }
+
+        .crm-row .status {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+        }
+
+        .status-new { color: var(--accent); }
+        .status-contacted { color: #66aaff; }
+        .status-qualified { color: #ff9944; }
+
+        /* CTA */
+        .cta-section {
+            border-top: 1px solid var(--gray-mid);
+            text-align: center;
+            padding: 8rem 2rem;
+        }
+
+        .cta-section .section-title {
+            max-width: 650px;
+            margin: 0 auto 1rem;
+        }
+
+        .cta-section .section-desc {
+            max-width: 520px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--gray-mid);
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-logo {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .footer-logo span { color: var(--accent); }
+
+        .footer-text {
+            color: var(--gray-text);
+            font-size: 0.8rem;
+        }
+
+        .footer-links { display: flex; gap: 1.5rem; }
+
+        .footer-links a {
+            color: var(--gray-text);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover { color: var(--accent); }
+
+        /* ANIMATIONS */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* TIME ON PAGE COUNTER */
+        .time-badge {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--gray-dark);
+            border: 1px solid var(--gray-mid);
+            border-radius: 6px;
+            padding: 0.75rem 1.25rem;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--gray-text);
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .time-badge span {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* POST-SUBMIT OVERLAY */
+        .submit-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10,10,10,0.95);
+            z-index: 500;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .submit-overlay.visible {
+            display: flex;
+        }
+
+        .submit-content {
+            max-width: 600px;
+        }
+
+        .submit-content h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            margin-bottom: 1.5rem;
+        }
+
+        .submit-content h2 em {
+            font-style: normal;
+            color: var(--accent);
+        }
+
+        .submit-content p {
+            color: var(--gray-text);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .submit-content .highlight { color: var(--accent); font-weight: 700; }
+
+        .submit-steps {
+            text-align: left;
+            margin: 2rem 0;
+            border: 1px solid var(--gray-mid);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .submit-step {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--gray-mid);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .submit-step:last-child { border-bottom: none; }
+
+        .submit-step-icon {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--gray-mid);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            transition: all 0.5s;
+        }
+
+        .submit-step-icon.done {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: var(--black);
+        }
+
+        .submit-step.pending { color: var(--gray-text); }
+        .submit-step.done { color: var(--white); }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            nav { padding: 1rem; }
+            .nav-links { display: none; }
+            .hero { padding: 7rem 1.5rem 3rem; }
+            section { padding: 4rem 1.5rem; }
+
+            .problem-grid,
+            .services-grid,
+            .process-steps,
+            .industries-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step { border-radius: 6px !important; }
+            .step-arrow { display: none; }
+
+            .diagnostic-wrapper { grid-template-columns: 1fr; }
+            .diag-sidebar { position: static; }
+
+            .cta-buttons, .hero-ctas { flex-direction: column; }
+            .btn-primary, .btn-secondary { width: 100%; text-align: center; justify-content: center; }
+
+            footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+
+            .time-badge { bottom: 1rem; right: 1rem; font-size: 0.6rem; padding: 0.5rem 0.75rem; }
+        }
+
+        /* GRAIN */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LIVE TICKER -->
+    <div class="live-ticker">
+        <span class="live-dot"></span>
+        ESTÁS DENTRO DE UN EMBUDO DE VENTAS EN VIVO — TODO LO QUE VES ES UNA DEMO FUNCIONANDO
+    </div>
+
+    <!-- NAV -->
+    <nav style="top: 24px;">
+        <div class="logo">Solo<span>Leads</span></div>
+        <div class="nav-links">
+            <a href="#que-paso">¿Qué está pasando?</a>
+            <a href="#servicios">Servicios</a>
+            <a href="#diagnostico" class="nav-cta">Prueba la demo</a>
+        </div>
+    </nav>
+
+    <!-- TIME ON PAGE -->
+    <div class="time-badge">
+        Llevas <span id="timeOnPage">0:00</span> en esta página — tu lead promedio se va en menos.
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-tag">Sí, esto es un anuncio. Y funcionó.</div>
+        <h1>Hiciste clic. Llegaste aquí. <em>Así de fácil debería ser para tus clientes.</em></h1>
+        <p class="hero-sub">Estás dentro de un sistema de captación de leads real. Esta página, el anuncio que te trajo, el formulario de abajo, el WhatsApp que vas a recibir — todo está automatizado. Y todo esto lo puedo construir para tu negocio.</p>
+        <div class="hero-ctas">
+            <a href="#diagnostico" class="btn-primary">Quiero probarlo en mi negocio →</a>
+            <a href="#que-paso" class="btn-secondary">Primero explícame qué está pasando</a>
+        </div>
+        <div class="meta-note">
+            ↑ Ese botón es un CTA — un llamado a la acción. Si le das clic, te lleva a un formulario que captura tu información y la manda a mi CRM en tiempo real. Eso es exactamente lo que necesita tu página.
+        </div>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-num" id="scrollPercent">0%</div>
+                <div class="stat-label">De esta página que has visto</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num" id="timeOnPageHero">0:00</div>
+                <div class="stat-label">Minutos en esta página</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">$—</div>
+                <div class="stat-label">Lo que costó traerte aquí</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOURTH WALL — WHAT JUST HAPPENED -->
+    <section class="fourth-wall reveal" id="que-paso">
+        <div class="section-tag">Espera — ¿qué acaba de pasar?</div>
+        <h2 class="section-title">Te voy a decir exactamente qué estás viviendo ahora mismo.</h2>
+        <div class="fw-narrative">
+            <p>Viste un anuncio. Probablemente en Facebook o Instagram. Algo te llamó la atención — el texto, la imagen, la promesa — y <strong>le diste clic</strong>. Eso no fue suerte. Fue segmentación.</p>
+            <p>Ese anuncio estaba diseñado para llegar a gente como tú: <span class="highlight">dueños de negocios locales que venden productos o servicios de alto valor</span> y que saben que podrían estar generando más clientes con internet, pero no tienen el sistema para hacerlo.</p>
+            <p>Y ahora estás leyendo esto. Llevas <strong id="inlineTime">unos segundos</strong> en esta página. Cada segundo que pasas aquí, mi sistema lo registra. Si llenas el formulario de abajo, en menos de 60 segundos recibes un WhatsApp automático. Sin que yo toque mi teléfono.</p>
+            <p><strong>Esto es exactamente lo que tus prospectos deberían estar viviendo cuando buscan tu servicio.</strong></p>
+        </div>
+
+        <!-- LIVE FUNNEL TRACKER -->
+        <div class="fw-timeline">
+            <div class="fw-timeline-header"><span class="live-dot"></span> Tu recorrido en tiempo real</div>
+            <div class="fw-step completed" id="step-ad">
+                <div class="fw-step-marker">✓</div>
+                <div class="fw-step-content">
+                    <h4>Viste el anuncio</h4>
+                    <p>Meta Ads te lo mostró porque cumples con el perfil de audiencia. Eso es targeting.</p>
+                </div>
+            </div>
+            <div class="fw-step completed" id="step-click">
+                <div class="fw-step-marker">✓</div>
+                <div class="fw-step-content">
+                    <h4>Hiciste clic</h4>
+                    <p>El copy y la creatividad funcionaron. Ahora eres un lead.</p>
+                </div>
+            </div>
+            <div class="fw-step active" id="step-page">
+                <div class="fw-step-marker">3</div>
+                <div class="fw-step-content">
+                    <h4>Estás leyendo esta página</h4>
+                    <p>Cada sección que lees te está calificando como prospecto. Estás en este paso ahora mismo.</p>
+                </div>
+            </div>
+            <div class="fw-step" id="step-form">
+                <div class="fw-step-marker">4</div>
+                <div class="fw-step-content">
+                    <h4>Llenas el diagnóstico</h4>
+                    <p>Tu información llega al CRM. Se crea un registro con tu nombre, negocio y respuestas.</p>
+                </div>
+            </div>
+            <div class="fw-step" id="step-whatsapp">
+                <div class="fw-step-marker">5</div>
+                <div class="fw-step-content">
+                    <h4>Recibes un WhatsApp en &lt;60 seg</h4>
+                    <p>Automatizado. Personalizado. Sin que nadie presione "enviar".</p>
+                </div>
+            </div>
+            <div class="fw-step" id="step-sequence">
+                <div class="fw-step-marker">6</div>
+                <div class="fw-step-content">
+                    <h4>Entras a una secuencia de seguimiento</h4>
+                    <p>Emails y mensajes durante los próximos 5 días. Todo automático. Todo con intención.</p>
+                </div>
+            </div>
+        </div>
+        <div class="meta-note" style="margin-top: 1.5rem;">
+            ↑ Esa línea de tiempo muestra tu recorrido real en mi embudo. Tus clientes deberían tener algo igual — y tú deberías poder verlo en un dashboard.
+        </div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section class="problem reveal" id="problema">
+        <div class="section-tag">Mientras tanto, en tu negocio</div>
+        <h2 class="section-title">Tus leads están viviendo algo muy diferente a esto.</h2>
+        <div class="problem-narrative">
+            <p>Piénsalo. Acabas de ver lo que se siente cuando un sistema te guía del anuncio a la conversación. Ahora piensa en lo que viven <strong>tus</strong> prospectos: ven un post en Facebook, tal vez mandan un mensaje... y nadie les contesta hasta mañana. O peor, nunca.</p>
+            <p>No es que tu producto o servicio sea malo. Es que <strong>no tienes el sistema para convertir atención en ventas</strong>. Y cada día que pasa así, estás dejando dinero sobre la mesa.</p>
+        </div>
+        <div class="problem-grid">
+            <div class="problem-item">
+                <div class="problem-icon">Sin velocidad</div>
+                <h3>Tardas horas en responder</h3>
+                <p>Un lead tiene 5 minutos de vida útil. Después de eso, ya está hablando con alguien más. ¿Cuánto tardas hoy en responder un mensaje?</p>
+            </div>
+            <div class="problem-item">
+                <div class="problem-icon">Sin visibilidad</div>
+                <h3>No sabes cuántos leads pierdes</h3>
+                <p>Porque no los estás contando. No hay un lugar donde veas quién preguntó, quién se atendió y quién se quedó sin respuesta.</p>
+            </div>
+            <div class="problem-item">
+                <div class="problem-icon">Sin seguimiento</div>
+                <h3>El que no compra hoy, desaparece</h3>
+                <p>¿Le mandas un segundo mensaje al prospecto que dijo "déjame pensarlo"? ¿Un tercero? La mayoría de los negocios no. Nosotros sí — automáticamente.</p>
+            </div>
+            <div class="problem-item">
+                <div class="problem-icon">Sin datos</div>
+                <h3>No sabes qué campaña funciona</h3>
+                <p>¿Cuál anuncio trae a los clientes que sí pagan? ¿Cuánto te cuesta cada cierre? Sin datos, cada peso que gastas en publicidad es una apuesta.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="services reveal" id="servicios">
+        <div class="section-tag">Lo que construimos para ti</div>
+        <h2 class="section-title">Lo mismo que estás viviendo ahora — <br>pero para tu negocio.</h2>
+        <p class="section-desc">Cada pieza que ves en esta página es un componente real que instalamos en tu operación. No es teoría — lo estás usando ahora mismo.</p>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-num">01</div>
+                <h3>Anuncios que atraen</h3>
+                <p>El anuncio que te trajo aquí fue diseñado con este método. Segmentación real, copy que conecta, creatividad que para el scroll. Eso hacemos para ti.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-num">02</div>
+                <h3>Página que convierte</h3>
+                <p>Esta página que estás leyendo tiene un solo objetivo: que llenes el formulario. Tu negocio necesita algo igual — una página que trabaje por ti 24/7.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-num">03</div>
+                <h3>CRM que organiza</h3>
+                <p>Cuando llenes el formulario, tu información entra a mi CRM automáticamente. Nombre, negocio, industria, todo categorizado. Eso hacemos con tus leads.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-num">04</div>
+                <h3>WhatsApp que responde</h3>
+                <p>En menos de 60 segundos después del formulario, recibes un WhatsApp. Sin que yo toque nada. Tu prospecto más caliente merece esa misma velocidad.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-num">05</div>
+                <h3>Secuencia que nutre</h3>
+                <p>Después del WhatsApp viene un email. Después otro. Una secuencia diseñada para mantenerte pensando en nosotros. Imagina eso para tus prospectos.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-num">06</div>
+                <h3>Datos que deciden</h3>
+                <p>Yo sé que estás aquí. Sé cuánto tiempo llevas. Sé qué secciones leíste. Ese nivel de información debería existir para cada lead de tu negocio.</p>
+            </div>
+        </div>
+        <div class="meta-note" style="margin-top: 2rem;">
+            ↑ Cada servicio que ves arriba es un componente que estás experimentando en vivo. No estamos describiendo lo que hacemos — te lo estamos haciendo.
+        </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="process reveal" id="proceso">
+        <div class="section-tag">Cómo lo armamos para ti</div>
+        <h2 class="section-title">3 semanas. Todo instalado.</h2>
+        <p class="section-desc">Sin contratos de 12 meses, sin juntas que no sirven, sin PowerPoints que nadie lee. Construimos el sistema y lo prendemos.</p>
+        <div class="process-steps">
+            <div class="step">
+                <div class="step-num">Semana 01</div>
+                <h3>Diagnóstico</h3>
+                <p>Mapeamos tu proceso de venta actual. Dónde se te escapan los leads, cuánto tardas en responder, qué canales usas. Una sesión. Un plan claro.</p>
+                <div class="step-arrow">→</div>
+            </div>
+            <div class="step">
+                <div class="step-num">Semana 02-03</div>
+                <h3>Construcción</h3>
+                <p>CRM configurado, campañas armadas, secuencias escritas, página de captura lista, automatizaciones conectadas. Todo a la medida de tu negocio.</p>
+                <div class="step-arrow">→</div>
+            </div>
+            <div class="step">
+                <div class="step-num">Lanzamiento</div>
+                <h3>Se prende todo</h3>
+                <p>Campañas activas, leads entrando, WhatsApp respondiendo solo, tu equipo con un CRM vivo. Y tú, viendo todo desde un dashboard.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- INDUSTRIES -->
+    <section class="industries reveal" id="industrias">
+        <div class="section-tag">¿Funciona para mi negocio?</div>
+        <h2 class="section-title">Si vendes algo que cuesta más de $50,000 MXN y tus clientes son locales — sí.</h2>
+        <p class="section-desc">Este sistema funciona para cualquier negocio donde la venta empieza con un "me interesa" y termina con una conversación. Estos son algunos:</p>
+        <div class="industries-grid">
+            <div class="industry-card">
+                <div class="industry-emoji">🏗️</div>
+                <h3>Desarrolladores Inmobiliarios</h3>
+                <p>Preventa de lotes, casas y departamentos. Leads filtrados por capacidad de compra, no curiosos que nunca van a cerrar.</p>
+            </div>
+            <div class="industry-card">
+                <div class="industry-emoji">🌿</div>
+                <h3>Paisajismo & Jardinería</h3>
+                <p>Proyectos residenciales y comerciales. Captura de dueños de propiedad que buscan diseño profesional, no solo "una cotización".</p>
+            </div>
+            <div class="industry-card">
+                <div class="industry-emoji">💧</div>
+                <h3>Albercas & Sistemas de Riego</h3>
+                <p>Instalación y mantenimiento. Prospectos que ya tienen la propiedad y la necesidad — solo falta el seguimiento para cerrarlos.</p>
+            </div>
+            <div class="industry-card">
+                <div class="industry-emoji">☀️</div>
+                <h3>Energía Solar</h3>
+                <p>El cliente investiga durante semanas. Tu secuencia de nurture lo acompaña hasta que está listo para decir sí.</p>
+            </div>
+            <div class="industry-card">
+                <div class="industry-emoji">🏥</div>
+                <h3>Clínicas & Consultorios</h3>
+                <p>Procedimientos estéticos, dentales, médicos. El paciente necesita confianza antes de agendar — tu seguimiento se la da.</p>
+            </div>
+            <div class="industry-card">
+                <div class="industry-emoji">🔧</div>
+                <h3>Remodelación & Construcción</h3>
+                <p>Cocinas, baños, ampliaciones. El presupuesto compite con otros 3 — el que da seguimiento primero, se lo lleva.</p>
+            </div>
+            <div class="industry-card">
+                <div class="industry-emoji">🚗</div>
+                <h3>Agencias Automotrices</h3>
+                <p>El prospecto pide cotización y desaparece. Un sistema de seguimiento lo recupera antes de que compre en otro lado.</p>
+            </div>
+            <div class="industry-card">
+                <div class="industry-emoji">🎓</div>
+                <h3>Escuelas & Educación</h3>
+                <p>Inscripciones de alto valor. Los papás comparan 4 opciones — tu secuencia automatizada te pone primero en su cabeza.</p>
+            </div>
+            <div class="industry-card">
+                <div class="industry-emoji">🛡️</div>
+                <h3>Seguros & Servicios Financieros</h3>
+                <p>Agentes que viven de referidos. Un pipeline digital multiplica tu alcance sin multiplicar tu tiempo.</p>
+            </div>
+        </div>
+        <div class="industries-note">¿No ves tu industria? <span>Si tu cliente necesita hablar contigo antes de comprar, esto funciona para ti.</span></div>
+    </section>
+
+    <!-- DIAGNOSTIC FORM — THE LIVE DEMO -->
+    <section class="diagnostic reveal" id="diagnostico">
+        <div class="section-tag">Tu turno — prueba el sistema</div>
+        <h2 class="section-title">Llena esto y ve qué pasa.</h2>
+        <p class="section-desc">Esto no es un formulario de contacto. Es una demostración en vivo. Llénalo, y en menos de 60 segundos vas a experimentar exactamente lo que sienten tus clientes cuando tienen un sistema que funciona.</p>
+
+        <div class="diagnostic-wrapper">
+            <div>
+                <div class="diag-form" id="diagForm">
+                    <div class="diag-field">
+                        <label>¿Cómo te llamas?</label>
+                        <input type="text" placeholder="Tu nombre" id="fieldName">
+                    </div>
+                    <div class="diag-field">
+                        <label>¿Cuál es tu negocio?</label>
+                        <input type="text" placeholder="Ej: Construcción de albercas, agencia dental..." id="fieldBiz">
+                    </div>
+                    <div class="diag-field">
+                        <label>¿Cuántos leads recibes al mes?</label>
+                        <select id="fieldLeads">
+                            <option value="" disabled selected>Selecciona</option>
+                            <option value="0-10">0-10 (casi nada)</option>
+                            <option value="10-30">10-30 (algunos)</option>
+                            <option value="30-100">30-100 (buen flujo)</option>
+                            <option value="100+">100+ (bastantes)</option>
+                        </select>
+                    </div>
+                    <div class="diag-field">
+                        <label>¿Cómo les das seguimiento hoy?</label>
+                        <select id="fieldFollowup">
+                            <option value="" disabled selected>Selecciona</option>
+                            <option value="manual">Manual — cuando me acuerdo</option>
+                            <option value="whatsapp">Les mando WhatsApp uno por uno</option>
+                            <option value="crm">Tengo un CRM básico</option>
+                            <option value="nada">Honestamente... no les doy</option>
+                        </select>
+                    </div>
+                    <div class="diag-field">
+                        <label>Tu WhatsApp (para la demo en vivo)</label>
+                        <input type="tel" placeholder="+52 322 123 4567" id="fieldPhone">
+                    </div>
+                    <button class="diag-submit" onclick="submitDiag()">Enviar y ver qué pasa →</button>
+                    <div class="meta-note" style="margin-top: 1.25rem;">
+                        ↑ Al dar clic, tu info entra al CRM, se crea tu registro, y se dispara un WhatsApp automático. Todo en menos de 60 segundos. Sin que yo haga nada.
+                    </div>
+                </div>
+            </div>
+
+            <div class="diag-sidebar">
+                <div class="diag-sidebar-card">
+                    <h4>¿Qué va a pasar?</h4>
+                    <p>1. Tu información entra a mi CRM automáticamente<br><br>2. Se crea un registro con tu nombre, negocio y respuestas<br><br>3. En menos de 60 segundos, te llega un WhatsApp — automatizado, no manual<br><br>4. En las próximas horas, recibes un email de seguimiento<br><br>5. Durante 5 días, recibes una secuencia diseñada para mostrarte cómo funciona el nurture</p>
+                </div>
+
+                <div class="crm-preview">
+                    <div class="crm-header"><span class="live-dot"></span> Vista previa del CRM</div>
+                    <div class="crm-row">
+                        <span>María G. — Solar</span>
+                        <span class="status status-qualified">Calificada</span>
+                        <span>Hace 2 hrs</span>
+                    </div>
+                    <div class="crm-row">
+                        <span>Roberto L. — Albercas</span>
+                        <span class="status status-contacted">Contactado</span>
+                        <span>Hace 4 hrs</span>
+                    </div>
+                    <div class="crm-row you" id="crmYou" style="display: none;">
+                        <span id="crmYouName">Tú — Tu negocio</span>
+                        <span class="status status-new">● Nuevo</span>
+                        <span>Ahora</span>
+                    </div>
+                    <div class="crm-row">
+                        <span>Ana P. — Remodelación</span>
+                        <span class="status status-contacted">Contactado</span>
+                        <span>Hace 6 hrs</span>
+                    </div>
+                </div>
+                <div class="meta-note" style="margin-top: 1rem;">
+                    ↑ Eso es un CRM. Cuando llenas el formulario, tu nombre aparece aquí arriba en tiempo real. Tus leads deberían verse así.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section reveal" id="contacto">
+        <div class="section-tag">¿Ya entendiste?</div>
+        <h2 class="section-title">Acabas de vivir lo que tus clientes deberían vivir.</h2>
+        <p class="section-desc">Si no llenaste el formulario todavía, hazlo — es la mejor parte. Y si ya lo hiciste, ya sabes cómo se siente un sistema que funciona. ¿Quieres uno para tu negocio?</p>
+        <div class="cta-buttons">
+            <a href="https://wa.me/TUNUMERO?text=Vi%20la%20demo%20de%20SoloLeads%20y%20quiero%20platicar%20sobre%20mi%20negocio" class="btn-primary" target="_blank">Hablemos por WhatsApp →</a>
+            <a href="#diagnostico" class="btn-secondary">Todavía no llené el formulario</a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">Solo<span>Leads</span></div>
+        <div class="footer-text">Infraestructura digital de ventas. Esto que viviste, lo construimos para ti.</div>
+        <div class="footer-links">
+            <a href="https://instagram.com/sololeads.mx" target="_blank">Instagram</a>
+            <a href="https://facebook.com/sololeads.mx" target="_blank">Facebook</a>
+            <a href="mailto:hola@sololeads.mx">Contacto</a>
+        </div>
+    </footer>
+
+    <!-- POST-SUBMIT OVERLAY -->
+    <div class="submit-overlay" id="submitOverlay">
+        <div class="submit-content">
+            <h2>Listo. <em>Ya estás en mi sistema.</em></h2>
+            <p>Tu información acaba de entrar a mi CRM. En los próximos segundos, vas a ver cómo se activa cada pieza del embudo — en tiempo real.</p>
+
+            <div class="submit-steps">
+                <div class="submit-step done" id="ov-step-1">
+                    <div class="submit-step-icon done">✓</div>
+                    <span>Formulario recibido — tu registro se creó en el CRM</span>
+                </div>
+                <div class="submit-step pending" id="ov-step-2">
+                    <div class="submit-step-icon">2</div>
+                    <span>Enviando WhatsApp automatizado...</span>
+                </div>
+                <div class="submit-step pending" id="ov-step-3">
+                    <div class="submit-step-icon">3</div>
+                    <span>Programando secuencia de emails (5 días)</span>
+                </div>
+                <div class="submit-step pending" id="ov-step-4">
+                    <div class="submit-step-icon">4</div>
+                    <span>Tu lead score: calculando...</span>
+                </div>
+            </div>
+
+            <p style="margin-top: 2rem;">Revisa tu WhatsApp. <span class="highlight">Eso es velocidad de respuesta.</span></p>
+            <p>Todo lo que acabas de vivir — desde el anuncio hasta este momento — es exactamente lo que construimos para negocios como el tuyo. <strong>¿Quieres uno?</strong></p>
+
+            <div class="cta-buttons" style="margin-top: 2rem;">
+                <a href="https://wa.me/TUNUMERO?text=Acabo%20de%20probar%20la%20demo%20de%20SoloLeads%20%E2%80%94%20quiero%20esto%20para%20mi%20negocio" class="btn-primary" target="_blank">Sí, quiero esto para mi negocio →</a>
+                <button class="btn-secondary" onclick="closeOverlay()">Cerrar y seguir viendo</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== TIME ON PAGE =====
+        let seconds = 0;
+        function formatTime(s) {
+            const m = Math.floor(s / 60);
+            const sec = s % 60;
+            return m + ':' + (sec < 10 ? '0' : '') + sec;
+        }
+        setInterval(() => {
+            seconds++;
+            const t = formatTime(seconds);
+            document.getElementById('timeOnPage').textContent = t;
+            document.getElementById('timeOnPageHero').textContent = t;
+
+            // Update inline time reference
+            const inlineEl = document.getElementById('inlineTime');
+            if (seconds < 30) inlineEl.textContent = 'unos segundos';
+            else if (seconds < 60) inlineEl.textContent = 'medio minuto';
+            else if (seconds < 120) inlineEl.textContent = 'más de un minuto';
+            else inlineEl.textContent = 'más de ' + Math.floor(seconds / 60) + ' minutos';
+        }, 1000);
+
+        // ===== SCROLL PERCENT =====
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const percent = Math.round((scrollTop / docHeight) * 100);
+            document.getElementById('scrollPercent').textContent = percent + '%';
+        });
+
+        // ===== SCROLL REVEAL =====
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        reveals.forEach(el => observer.observe(el));
+
+        // ===== FORM SUBMISSION =====
+        function submitDiag() {
+            const name = document.getElementById('fieldName').value.trim();
+            const biz = document.getElementById('fieldBiz').value.trim();
+            const phone = document.getElementById('fieldPhone').value.trim();
+
+            if (!name || !biz || !phone) {
+                alert('Llena todos los campos — es parte de la demo.');
+                return;
+            }
+
+            // Show name in CRM preview
+            const crmYou = document.getElementById('crmYou');
+            const crmYouName = document.getElementById('crmYouName');
+            crmYouName.textContent = name + ' — ' + biz;
+            crmYou.style.display = 'grid';
+
+            // Update funnel tracker
+            document.getElementById('step-form').classList.add('completed');
+            document.getElementById('step-form').querySelector('.fw-step-marker').textContent = '✓';
+
+            // Show overlay
+            document.getElementById('submitOverlay').classList.add('visible');
+
+            // Animate overlay steps
+            setTimeout(() => {
+                const s2 = document.getElementById('ov-step-2');
+                s2.classList.remove('pending');
+                s2.classList.add('done');
+                s2.querySelector('.submit-step-icon').classList.add('done');
+                s2.querySelector('.submit-step-icon').textContent = '✓';
+                s2.querySelector('span').textContent = 'WhatsApp enviado a ' + phone;
+
+                document.getElementById('step-whatsapp').classList.add('completed');
+                document.getElementById('step-whatsapp').querySelector('.fw-step-marker').textContent = '✓';
+            }, 2000);
+
+            setTimeout(() => {
+                const s3 = document.getElementById('ov-step-3');
+                s3.classList.remove('pending');
+                s3.classList.add('done');
+                s3.querySelector('.submit-step-icon').classList.add('done');
+                s3.querySelector('.submit-step-icon').textContent = '✓';
+                s3.querySelector('span').textContent = 'Secuencia de 5 emails programada';
+
+                document.getElementById('step-sequence').classList.add('active');
+            }, 3500);
+
+            setTimeout(() => {
+                const s4 = document.getElementById('ov-step-4');
+                s4.classList.remove('pending');
+                s4.classList.add('done');
+                s4.querySelector('.submit-step-icon').classList.add('done');
+                s4.querySelector('.submit-step-icon').textContent = '✓';
+                s4.querySelector('span').textContent = 'Lead score: Alta intención — ' + name + ', prioridad de contacto';
+            }, 5000);
+        }
+
+        function closeOverlay() {
+            document.getElementById('submitOverlay').classList.remove('visible');
+        }
+
+        // ===== LIVE CRM UPDATE ON NAME INPUT =====
+        document.getElementById('fieldName').addEventListener('input', function() {
+            const name = this.value.trim();
+            const biz = document.getElementById('fieldBiz').value.trim() || 'Tu negocio';
+            if (name.length > 1) {
+                const crmYou = document.getElementById('crmYou');
+                const crmYouName = document.getElementById('crmYouName');
+                crmYouName.textContent = name + ' — ' + biz;
+                crmYou.style.display = 'grid';
+            }
+        });
+
+        document.getElementById('fieldBiz').addEventListener('input', function() {
+            const name = document.getElementById('fieldName').value.trim() || 'Tú';
+            const biz = this.value.trim();
+            if (biz.length > 1) {
+                document.getElementById('crmYouName').textContent = name + ' — ' + biz;
+            }
+        });
+    </script>
+
+</body>
+</html>
