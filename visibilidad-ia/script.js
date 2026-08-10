@@ -264,6 +264,9 @@ form?.addEventListener("submit", async (event) => {
     }
 
     showConfirmation();
+    window.setTimeout(() => {
+      window.location.assign("/visibilidad-ia/gracias/");
+    }, 350);
   } catch (error) {
     formStatus.textContent = "No pudimos enviar tu solicitud. Tus datos siguen aquí; revisa tu conexión e inténtalo de nuevo.";
     console.error("Qualification form submission failed:", error);
