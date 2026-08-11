@@ -10,6 +10,7 @@ const submitButton = form?.querySelector("[type='submit']");
 const stickyCta = document.querySelector("[data-sticky-cta]");
 const heroCta = document.querySelector("[data-hero-cta]");
 const finalCta = document.querySelector("[data-final-cta]");
+const aiDemo = document.querySelector("[data-ai-demo]");
 
 let lastTrigger = null;
 let formStarted = false;
@@ -23,6 +24,89 @@ function trackEvent(eventName, details = {}) {
     event: eventName,
     page_offer: "sprint_visibilidad_ia",
     ...details,
+  });
+}
+
+function initAiDemo() {
+  if (!aiDemo) return;
+
+  const promptElement = aiDemo.querySelector("[data-ai-prompt]");
+  const loadingElement = aiDemo.querySelector("[data-ai-loading]");
+  const resultsElement = aiDemo.querySelector("[data-ai-results]");
+  const promptText = "¿Qué negocios recomiendas para [necesidad] en [ciudad]?";
+  const accentTerms = ["[necesidad]", "[ciudad]"];
+  const accentRanges = accentTerms.map((term) => {
+    const start = promptText.indexOf(term);
+    return { start, end: start + term.length };
+  });
+
+  function renderPrompt(visibleCharacters) {
+    const fragment = document.createDocumentFragment();
+    let index = 0;
+
+    accentRanges.forEach(({ start, end }) => {
+      if (index >= visibleCharacters) return;
+
+      if (start > index) {
+        fragment.append(promptText.slice(index, Math.min(start, visibleCharacters)));
+      }
+
+      if (visibleCharacters > start) {
+        const mark = document.createElement("mark");
+        mark.textContent = promptText.slice(start, Math.min(end, visibleCharacters));
+        fragment.append(mark);
+      }
+
+      index = end;
+    });
+
+    if (index < visibleCharacters) {
+      fragment.append(promptText.slice(index, visibleCharacters));
+    }
+
+    promptElement.replaceChildren(fragment);
+  }
+
+  function showFinalState() {
+    renderPrompt(promptText.length);
+    loadingElement.hidden = true;
+    resultsElement.hidden = false;
+    aiDemo.classList.remove("is-animating", "is-searching");
+    aiDemo.classList.add("is-complete");
+  }
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const compactViewport = window.matchMedia("(max-width: 720px)").matches;
+
+  if (reduceMotion || compactViewport) {
+    aiDemo.classList.add("is-static");
+    showFinalState();
+    return;
+  }
+
+  aiDemo.classList.add("is-animating");
+  aiDemo.classList.remove("is-complete");
+  loadingElement.hidden = true;
+  resultsElement.hidden = true;
+  renderPrompt(0);
+
+  window.requestAnimationFrame((startTime) => {
+    function typePrompt(currentTime) {
+      const progress = Math.min((currentTime - startTime) / 1500, 1);
+      renderPrompt(Math.floor(promptText.length * progress));
+
+      if (progress < 1) {
+        window.requestAnimationFrame(typePrompt);
+        return;
+      }
+
+      aiDemo.classList.add("is-searching");
+      loadingElement.hidden = false;
+
+      window.setTimeout(showFinalState, 800);
+    }
+
+    window.requestAnimationFrame(typePrompt);
   });
 }
 
@@ -55,6 +139,7 @@ function captureCampaign() {
 }
 
 const campaign = captureCampaign();
+initAiDemo();
 
 function updateStickyCta() {
   if (!stickyCta) return;
@@ -260,7 +345,7 @@ form?.addEventListener("submit", async (event) => {
     trackEvent("generate_lead", { form_name: "chequeo_express", currency: "MXN", value: 12900, ...campaign });
 
     if (typeof window.fbq === "function") {
-      window.fbq("track", "Lead", { content_name: "Chequeo Express de Visibilidad IA" });
+      window.fbq("track", "Lead", { content_name: "Diagnóstico Express de Visibilidad IA" });
     }
 
     showConfirmation();
