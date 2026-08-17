@@ -21,16 +21,20 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../legal.css">
+  <link rel="stylesheet" href="../navigation.css">
   <link rel="stylesheet" href="../footer.css">
   <title>Aviso de privacidad | Intercept</title>
 </head>
 <body>
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K83PTF3G" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
-  <header class="site-header" data-header>
+  <header class="site-header" data-header data-site-header>
     <a class="brand" href="/" aria-label="Intercept, ir al inicio">intercept<span>.</span></a>
-    <nav class="site-nav" aria-label="Navegación principal"><a href="/como-funciona/">Cómo funciona</a><a href="/visibilidad-ia/">Visibilidad IA</a><a href="/visibilidad-ia-para-marcas/">Para marcas</a><a href="/recursos/">Recursos</a><a href="/nosotros/">Nosotros</a></nav>
-    <a class="button button--accent button--small" href="/diagnostico-express/">Revisar mi visibilidad</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" aria-label="Abrir menú" data-nav-toggle><span data-nav-label>Menú</span><span class="nav-toggle__icon" aria-hidden="true"></span></button>
+    <div class="nav-panel" id="primary-navigation" data-nav-panel>
+      <nav class="site-nav" aria-label="Navegación principal"><a href="/como-funciona/">Cómo funciona</a><a href="/visibilidad-ia/">Visibilidad IA</a><a href="/visibilidad-ia-para-marcas/">Para marcas</a><a href="/recursos/">Recursos</a><a href="/nosotros/">Nosotros</a></nav>
+      <a class="button button--accent button--small nav-cta" href="/diagnostico-express/" data-cta-location="header">Solicitar mi Diagnóstico Express</a>
+    </div>
   </header>
   <main class="legal-main" id="contenido">
     <section class="section legal-hero">
@@ -97,6 +101,7 @@
     </div>
     <div class="global-footer__bottom"><p>© <span data-year>2026</span> Intercept. Todos los derechos reservados.</p><p class="global-footer__location">México</p></div>
   </footer>
+  <script src="../navigation.js" defer></script>
   <script src="../script.js" defer></script>
 </body>
 </html>

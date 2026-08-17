@@ -25,6 +25,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../navigation.css">
   <link rel="stylesheet" href="../footer.css">
   <title>Sprint de Visibilidad IA | Intercept</title>
   <script type="application/ld+json">
@@ -78,9 +79,19 @@
     <span>Capacidad inicial: máximo 3 Sprints activos · Los primeros 3 clientes incluyen nuevas mediciones a los 30 y 60 días</span>
   </div>
 
-  <header class="site-header" data-header>
-    <a class="brand" href="#inicio" aria-label="Intercept, ir al inicio">intercept<span>.</span></a>
-    <a class="button button--small button--accent js-diagnostic-cta" href="/diagnostico-express/" data-cta-location="header">Solicitar mi Diagnóstico Express</a>
+  <header class="site-header" data-header data-site-header>
+    <a class="brand" href="/" aria-label="Intercept, ir al inicio">intercept<span>.</span></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" aria-label="Abrir menú" data-nav-toggle><span data-nav-label>Menú</span><span class="nav-toggle__icon" aria-hidden="true"></span></button>
+    <div class="nav-panel" id="primary-navigation" data-nav-panel>
+      <nav class="site-nav" aria-label="Navegación principal">
+        <a href="/como-funciona/">Cómo funciona</a>
+        <a href="/visibilidad-ia/">Visibilidad IA</a>
+        <a href="/visibilidad-ia-para-marcas/">Para marcas</a>
+        <a href="/recursos/">Recursos</a>
+        <a href="/nosotros/">Nosotros</a>
+      </nav>
+      <a class="button button--small button--accent nav-cta js-diagnostic-cta" href="/diagnostico-express/" data-cta-location="header">Solicitar mi Diagnóstico Express</a>
+    </div>
   </header>
 
   <main id="contenido">
@@ -393,6 +404,7 @@
     </div>
   </dialog>
 
+  <script src="../navigation.js" defer></script>
   <script src="script.js" defer></script>
 </body>
 </html>
