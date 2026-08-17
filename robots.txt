@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://intercept.mx/sitemap.xml
+Sitemap: https://www.intercept.mx/sitemap.xml

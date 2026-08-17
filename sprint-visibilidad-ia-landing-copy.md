@@ -87,7 +87,7 @@ Mercado inicial: negocios locales y pymes mexicanas, con prioridad en Puerto Val
 
 ### Configuración SEO y social sugerida
 
-**URL:** `https://intercept.mx/visibilidad-ia`  
+**URL:** `https://www.intercept.mx/visibilidad-ia`  
 **Title:** `Visibilidad en ChatGPT, Gemini y Google | Intercept`  
 **Meta description:** `Medimos cómo aparece tu negocio en búsquedas y recomendaciones con IA, implementamos mejoras prioritarias en tu sitio y volvemos a medir. $12,900 MXN + IVA.`  
 **Open Graph title:** `¿La IA recomienda tu negocio o a tu competencia?`  
