@@ -1,6 +1,9 @@
+document.documentElement.classList.add("js");
+
 const CAMPAIGN_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
 const CAMPAIGN_STORAGE_KEY = "intercept_visibilidad_ia_campaign";
-
+const header = document.querySelector("[data-header]");
+const aiDemo = document.querySelector("[data-ai-demo]");
 const dialog = document.querySelector("[data-dialog]");
 const form = document.querySelector("[data-form]");
 const formContent = document.querySelector("[data-form-content]");
@@ -10,7 +13,6 @@ const submitButton = form?.querySelector("[type='submit']");
 const stickyCta = document.querySelector("[data-sticky-cta]");
 const heroCta = document.querySelector("[data-hero-cta]");
 const finalCta = document.querySelector("[data-final-cta]");
-const aiDemo = document.querySelector("[data-ai-demo]");
 
 let lastTrigger = null;
 let formStarted = false;
@@ -20,94 +22,7 @@ let finalCtaVisible = false;
 
 function trackEvent(eventName, details = {}) {
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({
-    event: eventName,
-    page_offer: "sprint_visibilidad_ia",
-    ...details,
-  });
-}
-
-function initAiDemo() {
-  if (!aiDemo) return;
-
-  const promptElement = aiDemo.querySelector("[data-ai-prompt]");
-  const loadingElement = aiDemo.querySelector("[data-ai-loading]");
-  const resultsElement = aiDemo.querySelector("[data-ai-results]");
-  const promptText = "¿Qué negocios recomiendas para [necesidad] en [ciudad]?";
-  const accentTerms = ["[necesidad]", "[ciudad]"];
-  const accentRanges = accentTerms.map((term) => {
-    const start = promptText.indexOf(term);
-    return { start, end: start + term.length };
-  });
-
-  function renderPrompt(visibleCharacters) {
-    const fragment = document.createDocumentFragment();
-    let index = 0;
-
-    accentRanges.forEach(({ start, end }) => {
-      if (index >= visibleCharacters) return;
-
-      if (start > index) {
-        fragment.append(promptText.slice(index, Math.min(start, visibleCharacters)));
-      }
-
-      if (visibleCharacters > start) {
-        const mark = document.createElement("mark");
-        mark.textContent = promptText.slice(start, Math.min(end, visibleCharacters));
-        fragment.append(mark);
-      }
-
-      index = end;
-    });
-
-    if (index < visibleCharacters) {
-      fragment.append(promptText.slice(index, visibleCharacters));
-    }
-
-    promptElement.replaceChildren(fragment);
-  }
-
-  function showFinalState() {
-    renderPrompt(promptText.length);
-    loadingElement.hidden = true;
-    resultsElement.hidden = false;
-    aiDemo.classList.remove("is-animating", "is-searching");
-    aiDemo.classList.add("is-complete");
-  }
-
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const compactViewport = window.matchMedia("(max-width: 720px)").matches;
-
-  if (reduceMotion || compactViewport) {
-    aiDemo.classList.add("is-static");
-    showFinalState();
-    return;
-  }
-
-  aiDemo.classList.add("is-animating");
-  aiDemo.classList.remove("is-complete");
-  loadingElement.hidden = true;
-  resultsElement.hidden = true;
-  renderPrompt(0);
-
-  window.requestAnimationFrame((startTime) => {
-    function typePrompt(currentTime) {
-      const progress = Math.min((currentTime - startTime) / 1500, 1);
-      renderPrompt(Math.floor(promptText.length * progress));
-
-      if (progress < 1) {
-        window.requestAnimationFrame(typePrompt);
-        return;
-      }
-
-      aiDemo.classList.add("is-searching");
-      loadingElement.hidden = false;
-
-      window.setTimeout(showFinalState, 800);
-    }
-
-    window.requestAnimationFrame(typePrompt);
-  });
+  window.dataLayer.push({ event: eventName, page_offer: "visibilidad_ia_para_marcas", ...details });
 }
 
 function captureCampaign() {
@@ -139,7 +54,66 @@ function captureCampaign() {
 }
 
 const campaign = captureCampaign();
+
+function updateHeader() {
+  header?.classList.toggle("is-scrolled", window.scrollY > 12);
+}
+
+updateHeader();
+window.addEventListener("scroll", updateHeader, { passive: true });
+document.querySelectorAll("[data-year]").forEach((element) => {
+  element.textContent = new Date().getFullYear();
+});
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const compactViewport = window.matchMedia("(max-width: 720px)").matches;
+
+function initAiDemo() {
+  if (!aiDemo || reduceMotion || compactViewport) return;
+  const query = aiDemo.querySelector("[data-ai-query]");
+  if (!query) return;
+
+  const fullText = query.textContent.trim();
+  query.textContent = "";
+  aiDemo.classList.add("is-animating", "is-typing");
+
+  window.requestAnimationFrame((startTime) => {
+    function type(currentTime) {
+      const progress = Math.min((currentTime - startTime) / 1650, 1);
+      query.textContent = fullText.slice(0, Math.ceil(fullText.length * progress));
+
+      if (progress < 1) {
+        window.requestAnimationFrame(type);
+        return;
+      }
+
+      aiDemo.classList.remove("is-typing");
+      window.setTimeout(() => {
+        aiDemo.classList.remove("is-animating");
+        aiDemo.classList.add("is-complete");
+      }, 850);
+    }
+
+    window.requestAnimationFrame(type);
+  });
+}
+
 initAiDemo();
+
+const revealElements = document.querySelectorAll(".reveal");
+if (reduceMotion || !("IntersectionObserver" in window)) {
+  revealElements.forEach((element) => element.classList.add("is-visible"));
+} else {
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-visible");
+      revealObserver.unobserve(entry.target);
+    });
+  }, { rootMargin: "0px 0px -8%", threshold: 0.08 });
+
+  revealElements.forEach((element) => revealObserver.observe(element));
+}
 
 function updateStickyCta() {
   if (!stickyCta) return;
@@ -148,13 +122,23 @@ function updateStickyCta() {
   stickyCta.classList.toggle("is-visible", shouldShow);
 }
 
-function openDialog(event) {
-  lastTrigger = event.currentTarget;
-  trackEvent("lp_cta_click", {
-    cta_location: lastTrigger.dataset.ctaLocation || "unknown",
-    ...campaign,
-  });
+if ("IntersectionObserver" in window && heroCta && finalCta) {
+  const ctaObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.target === heroCta) heroCtaVisible = entry.isIntersecting;
+      if (entry.target === finalCta) finalCtaVisible = entry.isIntersecting;
+    });
+    updateStickyCta();
+  }, { threshold: 0.12 });
 
+  ctaObserver.observe(heroCta);
+  ctaObserver.observe(finalCta);
+}
+
+function openDialog(event) {
+  event.preventDefault();
+  lastTrigger = event.currentTarget;
+  trackEvent("lp_cta_click", { cta_location: lastTrigger.dataset.ctaLocation || "unknown", ...campaign });
   if (!dialog) return;
 
   if (typeof dialog.showModal === "function") {
@@ -185,10 +169,7 @@ function closeDialog() {
   }
 }
 
-document.querySelectorAll(".js-open-form").forEach((button) => {
-  button.addEventListener("click", openDialog);
-});
-
+document.querySelectorAll(".js-open-form").forEach((button) => button.addEventListener("click", openDialog));
 document.querySelectorAll(".js-diagnostic-cta").forEach((link) => {
   link.addEventListener("click", () => {
     trackEvent("lp_cta_click", {
@@ -198,39 +179,13 @@ document.querySelectorAll(".js-diagnostic-cta").forEach((link) => {
     });
   });
 });
-
-document.querySelectorAll("[data-close-dialog]").forEach((button) => {
-  button.addEventListener("click", closeDialog);
-});
+document.querySelectorAll("[data-close-dialog]").forEach((button) => button.addEventListener("click", closeDialog));
 
 dialog?.addEventListener("close", () => {
   dialog.classList.remove("is-fallback-modal");
   document.body.classList.remove("dialog-open");
   updateStickyCta();
   lastTrigger?.focus();
-});
-
-dialog?.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    event.preventDefault();
-    closeDialog();
-    return;
-  }
-
-  if (event.key === "Tab" && dialog.classList.contains("is-fallback-modal")) {
-    const focusable = [...dialog.querySelectorAll("button, input, select, textarea, [href], [tabindex]:not([tabindex='-1'])")]
-      .filter((element) => !element.disabled && !element.hidden && element.offsetParent !== null);
-    if (!focusable.length) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
-  }
 });
 
 dialog?.addEventListener("click", (event) => {
@@ -243,9 +198,7 @@ dialog?.addEventListener("click", (event) => {
 function clearErrors() {
   formStatus.textContent = "";
   form.querySelectorAll("[aria-invalid='true']").forEach((field) => field.removeAttribute("aria-invalid"));
-  form.querySelectorAll(".field-error").forEach((error) => {
-    error.textContent = "";
-  });
+  form.querySelectorAll(".field-error").forEach((error) => { error.textContent = ""; });
 }
 
 function showFieldError(name, message) {
@@ -262,20 +215,20 @@ function validateForm() {
   const errors = {};
 
   if (!String(data.get("name") || "").trim()) errors.name = "Escribe tu nombre.";
+  if (!String(data.get("company") || "").trim()) errors.company = "Escribe el nombre de la marca o empresa.";
+  if (!String(data.get("category") || "").trim()) errors.category = "Escribe la categoría o producto principal.";
 
   const website = String(data.get("website") || "").trim();
   if (!website) {
-    errors.website = "Escribe el sitio web de tu negocio.";
+    errors.website = "Escribe el sitio web de la marca.";
   } else {
     try {
       const parsed = new URL(website);
       if (!["http:", "https:"].includes(parsed.protocol)) throw new Error("invalid protocol");
     } catch {
-      errors.website = "Usa una URL completa, por ejemplo: https://tu-negocio.mx";
+      errors.website = "Usa una URL completa, por ejemplo: https://tumarca.com";
     }
   }
-
-  if (!String(data.get("market") || "").trim()) errors.market = "Escribe tu ciudad o mercado principal.";
 
   const whatsapp = String(data.get("whatsapp") || "").trim();
   if (!whatsapp) {
@@ -285,20 +238,16 @@ function validateForm() {
   }
 
   if (!data.get("buying_authority")) errors.buying_authority = "Selecciona una opción.";
-  if (!data.get("implementation_intent")) errors.implementation_intent = "Confirma tu intención de implementación.";
-  if (!data.get("terms_acknowledgment")) errors.terms_acknowledgment = "Confirma que revisaste el precio y los términos.";
+  if (!data.get("implementation_intent")) errors.implementation_intent = "Confirma tu interés en implementar mejoras.";
+  if (!data.get("terms_acknowledgment")) errors.terms_acknowledgment = "Confirma que entiendes los límites del servicio.";
 
   Object.entries(errors).forEach(([name, message]) => showFieldError(name, message));
+  if (!Object.keys(errors).length) return true;
 
-  if (Object.keys(errors).length) {
-    const firstName = Object.keys(errors)[0];
-    const firstField = form.elements.namedItem(firstName);
-    const focusTarget = firstField instanceof RadioNodeList ? firstField[0] : firstField;
-    focusTarget?.focus();
-    return false;
-  }
-
-  return true;
+  const firstField = form.elements.namedItem(Object.keys(errors)[0]);
+  const focusTarget = firstField instanceof RadioNodeList ? firstField[0] : firstField;
+  focusTarget?.focus();
+  return false;
 }
 
 function formPayload() {
@@ -323,7 +272,15 @@ function showConfirmation() {
 form?.addEventListener("input", () => {
   if (formStarted) return;
   formStarted = true;
-  trackEvent("form_start", { form_name: "chequeo_express", ...campaign });
+  trackEvent("form_start", { form_name: "diagnostico_visibilidad_marcas", ...campaign });
+});
+
+form?.addEventListener("change", (event) => {
+  const field = event.target;
+  if (!field.name) return;
+  const error = document.getElementById(`${field.name}-error`);
+  if (error) error.textContent = "";
+  field.removeAttribute("aria-invalid");
 });
 
 form?.addEventListener("submit", async (event) => {
@@ -350,65 +307,18 @@ form?.addEventListener("submit", async (event) => {
     });
 
     if (!response.ok) throw new Error(`Lead endpoint returned ${response.status}`);
-
-    trackEvent("form_submit", { form_name: "chequeo_express", ...campaign });
-    trackEvent("generate_lead", { form_name: "chequeo_express", currency: "MXN", value: 12900, ...campaign });
-
-    if (typeof window.fbq === "function") {
-      window.fbq("track", "Lead", { content_name: "Diagnóstico Express de Visibilidad IA" });
-    }
-
+    trackEvent("form_submit", { form_name: "diagnostico_visibilidad_marcas", ...campaign });
+    trackEvent("generate_lead", { form_name: "diagnostico_visibilidad_marcas", ...campaign });
+    if (typeof window.fbq === "function") window.fbq("track", "Lead", { content_name: "Diagnóstico de Visibilidad IA para Marcas" });
     showConfirmation();
-    window.setTimeout(() => {
-      window.location.assign("/visibilidad-ia/gracias/");
-    }, 350);
   } catch (error) {
     formStatus.textContent = "No pudimos enviar tu solicitud. Tus datos siguen aquí; revisa tu conexión e inténtalo de nuevo.";
-    console.error("Qualification form submission failed:", error);
+    console.error("Brand visibility form submission failed:", error);
   } finally {
     isSubmitting = false;
     submitButton.disabled = false;
     submitButton.textContent = originalLabel;
   }
-});
-
-form?.addEventListener("change", (event) => {
-  const field = event.target;
-  if (!field.name) return;
-  const error = document.getElementById(`${field.name}-error`);
-  if (error) error.textContent = "";
-  field.removeAttribute("aria-invalid");
-});
-
-document.querySelectorAll(".faq details").forEach((item) => {
-  item.addEventListener("toggle", () => {
-    if (!item.open) return;
-    trackEvent("faq_open", { faq_question: item.querySelector("summary")?.textContent.trim() || "unknown" });
-  });
-});
-
-if ("IntersectionObserver" in window && heroCta && finalCta) {
-  const visibilityObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.target === heroCta) heroCtaVisible = entry.isIntersecting;
-      if (entry.target === finalCta) finalCtaVisible = entry.isIntersecting;
-    });
-    updateStickyCta();
-  }, { threshold: 0.12 });
-
-  visibilityObserver.observe(heroCta);
-  visibilityObserver.observe(finalCta);
-}
-
-const header = document.querySelector("[data-header]");
-function updateHeader() {
-  header?.classList.toggle("is-scrolled", window.scrollY > 10);
-}
-updateHeader();
-window.addEventListener("scroll", updateHeader, { passive: true });
-
-document.querySelectorAll("[data-year]").forEach((element) => {
-  element.textContent = new Date().getFullYear();
 });
 
 trackEvent("view_landing", { ...campaign });

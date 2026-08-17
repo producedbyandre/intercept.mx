@@ -22,29 +22,43 @@ function initAiDemo() {
   const query = aiDemo.querySelector("[data-ai-query]");
   if (!query) return;
 
-  const fullText = query.textContent.trim();
-  query.textContent = "";
-  aiDemo.classList.add("is-animating", "is-typing");
+  const prompts = [
+    "¿Qué empresas de seguridad recomiendas en CDMX?",
+    "¿Cuáles son las mejores proteínas vegetales en México?",
+    "¿Qué software recomiendas para administrar una pyme?",
+  ];
+  let promptIndex = 0;
 
-  window.requestAnimationFrame((startTime) => {
-    function type(currentTime) {
-      const progress = Math.min((currentTime - startTime) / 1450, 1);
-      query.textContent = fullText.slice(0, Math.ceil(fullText.length * progress));
+  function animatePrompt() {
+    const prompt = prompts[promptIndex];
+    query.textContent = "";
+    aiDemo.classList.remove("is-complete");
+    aiDemo.classList.add("is-animating", "is-typing");
 
-      if (progress < 1) {
-        window.requestAnimationFrame(type);
-        return;
+    window.requestAnimationFrame((startTime) => {
+      function type(currentTime) {
+        const progress = Math.min((currentTime - startTime) / 1450, 1);
+        query.textContent = prompt.slice(0, Math.ceil(prompt.length * progress));
+
+        if (progress < 1) {
+          window.requestAnimationFrame(type);
+          return;
+        }
+
+        aiDemo.classList.remove("is-typing");
+        window.setTimeout(() => {
+          aiDemo.classList.remove("is-animating");
+          aiDemo.classList.add("is-complete");
+          promptIndex = (promptIndex + 1) % prompts.length;
+          window.setTimeout(animatePrompt, 3400);
+        }, 900);
       }
 
-      aiDemo.classList.remove("is-typing");
-      window.setTimeout(() => {
-        aiDemo.classList.remove("is-animating");
-        aiDemo.classList.add("is-complete");
-      }, 900);
-    }
+      window.requestAnimationFrame(type);
+    });
+  }
 
-    window.requestAnimationFrame(type);
-  });
+  animatePrompt();
 }
 
 initAiDemo();
