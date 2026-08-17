@@ -355,7 +355,7 @@ form?.addEventListener("submit", async (event) => {
     trackEvent("generate_lead", { form_name: "chequeo_express", currency: "MXN", value: 12900, ...campaign });
 
     if (typeof window.fbq === "function") {
-      window.fbq("track", "Lead", { content_name: "Diagnóstico Express de Visibilidad IA" });
+      window.fbq("track", "Lead", { content_name: "Revisión Inicial de Visibilidad IA" });
     }
 
     showConfirmation();

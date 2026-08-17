@@ -102,6 +102,7 @@ function validateForm() {
   if (!String(data.get("priority") || "").trim()) errors.priority = "Escribe el producto o servicio que quieres priorizar.";
   if (!data.get("investment_intent")) errors.investment_intent = "Selecciona una opción.";
   if (!data.get("implementation_intent")) errors.implementation_intent = "Selecciona una opción.";
+  if (!data.get("terms_acknowledgment")) errors.terms_acknowledgment = "Confirma que entiendes los límites del servicio.";
 
   Object.entries(errors).forEach(([name, message]) => showFieldError(name, message));
   if (!Object.keys(errors).length) return true;
@@ -116,6 +117,7 @@ function formPayload() {
   const data = new FormData(form);
   const payload = Object.fromEntries(data.entries());
   delete payload.company_fax;
+  payload.terms_acknowledgment = data.has("terms_acknowledgment");
   payload.page_url = window.location.href;
   payload.referrer = document.referrer;
   payload.submitted_at = new Date().toISOString();
@@ -169,7 +171,7 @@ form?.addEventListener("submit", async (event) => {
     trackEvent("generate_lead", { form_name: "diagnostico_express", currency: "MXN", value: 12900, ...campaign });
 
     if (typeof window.fbq === "function") {
-      window.fbq("track", "Lead", { content_name: "Diagnóstico Express de Visibilidad IA" });
+      window.fbq("track", "Lead", { content_name: "Revisión Inicial de Visibilidad IA" });
     }
 
     form.hidden = true;
@@ -178,7 +180,7 @@ form?.addEventListener("submit", async (event) => {
     window.setTimeout(() => window.location.assign("/visibilidad-ia/gracias/"), 350);
   } catch (error) {
     formStatus.textContent = "No pudimos enviar tu solicitud. Tus datos siguen aquí; revisa tu conexión e inténtalo de nuevo.";
-    console.error("Diagnóstico Express form submission failed:", error);
+    console.error("Revisión Inicial form submission failed:", error);
   } finally {
     isSubmitting = false;
     submitButton.disabled = false;

@@ -1,0 +1,51 @@
+.web-hero { min-height: 760px; }
+.web-blueprint { overflow: hidden; border: 1px solid var(--line-strong); border-radius: var(--radius); background: rgba(23,29,24,.94); box-shadow: 0 34px 90px rgba(0,0,0,.38); }
+.web-blueprint__header, .web-blueprint__footer { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 15px 18px; color: var(--paper-muted); font-family: var(--font-mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+.web-blueprint__header { border-bottom: 1px solid var(--line); }
+.web-blueprint__header span:last-child { color: var(--acid); }
+.web-blueprint__screen { margin: 22px; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: #101411; }
+.web-blueprint__nav { display: flex; gap: 9px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.web-blueprint__nav i { width: 15%; height: 5px; border-radius: 10px; background: var(--line-strong); }
+.web-blueprint__nav i:first-child { width: 25%; margin-right: auto; background: var(--acid); }
+.web-blueprint__hero { display: grid; min-height: 205px; place-content: center; padding: 28px; text-align: center; }
+.web-blueprint__hero strong { font-size: clamp(24px, 3vw, 36px); letter-spacing: -.045em; }
+.web-blueprint__hero span { margin-top: 8px; color: var(--paper-muted); font-size: 12px; }
+.web-blueprint__cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; padding: 0 16px 16px; }
+.web-blueprint__cards span { min-height: 74px; padding: 12px; border: 1px solid var(--line); border-radius: 7px; color: var(--paper-dim); font-size: 11px; }
+.web-blueprint__footer { justify-content: flex-start; border-top: 1px solid var(--line); }
+.web-blueprint__footer span::after { margin-left: 14px; color: var(--acid); content: "·"; }
+.web-blueprint__footer span:last-child::after { content: ""; }
+.web-card-grid, .web-scope-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; }
+.web-card-grid article, .web-scope-grid article { padding: 30px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+.web-card-grid article > span, .web-scope-grid article > span { display: block; margin-bottom: 30px; color: var(--acid); font-family: var(--font-mono); font-size: 10px; }
+.web-card-grid p, .web-scope-grid p { margin: 0; color: var(--paper-muted); font-size: 14px; }
+.web-scope-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.web-boundary-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+.web-boundary-grid > div { padding: clamp(25px,4vw,40px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+.web-boundary-grid ul { margin: 20px 0 0; padding-left: 19px; color: var(--paper-dim); }
+.web-boundary-grid li + li { margin-top: 12px; }
+.web-proof .section-heading { margin-bottom: 0; }
+.web-ownership { display: grid; grid-template-columns: 110px 1fr; align-items: center; gap: clamp(30px,6vw,80px); }
+.web-ownership__mark { display: grid; width: 92px; height: 92px; place-items: center; border: 1px solid var(--acid); border-radius: 50%; color: var(--acid); font-family: var(--font-mono); font-size: 34px; }
+.web-ownership h2 { max-width: 800px; }
+.web-ownership p:not(.kicker) { max-width: 780px; margin-bottom: 0; color: var(--paper-dim); font-size: 18px; }
+.form-question > .choice { margin-top: 10px; }
+.acknowledgments { display: grid; gap: 13px; margin: 4px 0 23px; }
+.acknowledgments .choice { align-items: flex-start; }
+.acknowledgments .choice input { flex: none; margin-top: 3px; }
+
+@media (max-width: 980px) {
+  .web-card-grid, .web-scope-grid { grid-template-columns: 1fr; }
+  .web-blueprint { width: min(100%,620px); }
+}
+@media (max-width: 760px) {
+  .web-boundary-grid { grid-template-columns: 1fr; }
+  .web-ownership { grid-template-columns: 1fr; }
+  .web-ownership__mark { width: 68px; height: 68px; }
+  .web-blueprint__footer { flex-wrap: wrap; }
+}
+@media (max-width: 520px) {
+  .web-blueprint__cards { grid-template-columns: 1fr; }
+  .web-blueprint__cards span { min-height: auto; }
+  .web-blueprint__footer span::after { display: none; }
+}
